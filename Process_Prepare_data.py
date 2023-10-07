@@ -10,7 +10,6 @@ import math
 import numpy as np
 from scipy.fftpack import fft, ifft
 
-
 class TwoDataset:
     """
     MODMA和PRED+CT数据集基类,
