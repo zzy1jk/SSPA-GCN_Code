@@ -1,2 +1,2 @@
 # SSPA-GCN_Code
-我们将在近期对代码进行整理，随后进行发布，并附加代码使用说明文档
+We will gradually organize our code into a more standardized format and, once completed, we will make it publicly available along with comprehensive code usage documentation.
