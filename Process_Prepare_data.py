@@ -10,6 +10,7 @@ import math
 import numpy as np
 from scipy.fftpack import fft, ifft
 
+
 class TwoDataset:
     """
     MODMA和PRED+CT数据集基类,
@@ -83,6 +84,7 @@ class ProcessRawData(TwoDataset):
         base = max_data - min_data
         normalized_data = (data - min_data) / base
         return normalized_data
+
 
     def get_graph_data(self):
         Processed_Data_NoNor = np.load('./NpyFile/' + Dataset[0] + "_DE_feature.npy", allow_pickle=True)
@@ -268,9 +270,11 @@ def train_loader_test_loader(Dataset, DE_Data_reshape, graph_data_reshape, label
 
 
 if __name__ == '__main__':
-    # 文件路径
-    Dataset = "PRED+CT"
-    example = ProcessRawData(Dataset)
-    DE_feature = example.DE_conduction()
-    np.save('./NpyFile/' + Dataset[0] + "_DE_feature", DE_feature)
-    print(Dataset + '微分熵特征矩阵计算完成！')
+    graph_data = np.load(" ")
+    print(",...")
+#     # 文件路径
+#     Dataset = "PRED+CT"
+#     example = ProcessRawData(Dataset)
+#     DE_feature = example.DE_conduction()
+#     np.save('./NpyFile/' + Dataset[0] + "_DE_feature", DE_feature)
+#     print(Dataset + '微分熵特征矩阵计算完成！')
