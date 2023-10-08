@@ -10,7 +10,6 @@ import math
 import numpy as np
 from scipy.fftpack import fft, ifft
 
-
 class TwoDataset:
     """
     MODMA和PRED+CT数据集基类,
@@ -106,7 +105,6 @@ class ProcessRawData(TwoDataset):
             print("生成图进度：", m)
         print(Graph.shape)
         return Graph
-
 
 class PrepareData(TwoDataset):
     def __init__(self, Dataset, domain_num, use_soft_label, Band_index):
