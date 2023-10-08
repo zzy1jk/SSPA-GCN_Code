@@ -84,51 +84,6 @@ class ProcessRawData(TwoDataset):
         normalized_data = (data - min_data) / base
         return normalized_data
 
-    ## 微分熵特征计算
-    def feature_de_construct(self, data):
-        '''
-        计算一个2s时间窗内所有通道的DE数据
-        '''
-        fStartNum = np.zeros([len(self.fStart)], dtype=int)
-        fEndNum = np.zeros([len(self.fEnd)], dtype=int)
-        for i in range(0, len(self.fStart)):
-            fStartNum[i] = int(self.fStart[i] / self.sample_rate * self.stftn)
-            fEndNum[i] = int(self.fEnd[i] / self.sample_rate * self.stftn)
-        de = np.zeros([self.chan_num, len(self.fStart)])
-        Hlength = self.window_len * self.sample_rate
-        Hwindow = np.array([0.5 - 0.5 * np.cos(2 * np.pi * n / (Hlength + 1)) for n in range(1, Hlength + 1)])
-
-        dataNow = data[0:self.chan_num]
-        for j in range(self.chan_num):
-            temp = dataNow[j]
-            Hdata = temp * Hwindow
-            FFTdata = fft(Hdata, self.stftn)
-            magFFTdata = abs(FFTdata[0:int(self.stftn / 2)])
-            for p in range(0, len(self.fStart)):
-                E = 0
-                for p0 in range(fStartNum[p] - 1, fEndNum[p]):
-                    E = E + magFFTdata[p0] * magFFTdata[p0]
-                E = E / (fEndNum[p] - fStartNum[p] + 1)
-                de[j][p] = 100 * math.log(100 * E, 2)
-        DE_one_2s_window = np.expand_dims(de, axis=0)
-        return DE_one_2s_window
-
-    def DE_conduction(self):
-        file_name_list, subject_name = self.get_subject_name()
-        DE_all_time_windows = np.zeros([self.win_num, self.chan_num, len(self.fStart)], dtype=float)  # 150*128*5
-        Out_DE_allsub = np.zeros([self.sub_num, self.win_num, self.chan_num, len(self.fStart)], dtype=float)
-        i = 0
-        for filename in file_name_list:
-            data = self.ReadRawDataSet(filename, subject_name[i])
-            for time_step in range(self.win_num):
-                data_time = data[0:self.chan_num,
-                            self.stftn * time_step:self.stftn * (time_step + 1)]
-                DE_all_time_windows[time_step] = self.feature_de_construct(data_time)
-            Out_DE_allsub[i] = np.expand_dims(DE_all_time_windows, axis=0)  # 第i个受试者的所有DE数据
-            i += 1
-        print('DE返回形状:', Out_DE_allsub.shape)
-        return Out_DE_allsub
-
     def get_graph_data(self):
         Processed_Data_NoNor = np.load('./NpyFile/' + Dataset[0] + "_DE_feature.npy", allow_pickle=True)
         # 特征数据归一化后再计算相关性
